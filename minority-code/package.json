@@ -14,12 +14,43 @@
   ],
   "main": "./extension.js",
   "contributes": {
+
     "keybindings": [
       {
         "command": "minority-code.makeComment",
         "key": "ctrl+shift+m",
         "mac": "cmd+shift+m",
         "when": "editorTextFocus"
+
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "require",
+          "title": "Perfect Coop",
+          "icon": "resources/handshake.svg"
+        }
+      ]
+    },
+    "views": {
+      "require": [
+				{
+					"id": "require",
+					"name": "Require"
+				}
+			]
+    },
+    "commands": [
+      {
+        "command": "minority-code.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "minority-code.refresh",
+        "title": "Refresh"
+      },
+      {
+        "command": "minority-code.printReferences",
+        "title": "Print Reference"
       }
     ]
   },
