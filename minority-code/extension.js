@@ -140,6 +140,7 @@ const initExtension = async (context) => {
 
   const currentPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
+
   if (!username) {
     console.log("no user name");
     await vscode.window
@@ -150,6 +151,9 @@ const initExtension = async (context) => {
         await context.globalState.update("username", username);
       });
   }
+
+  vscode.commands.executeCommand("minority-code.helloWorld");
+
   if (!branches) {
     console.log("no branches info");
     await vscode.window
@@ -230,10 +234,11 @@ function activate(context) {
   let tree = vscode.window.createTreeView("require",{treeDataProvider: treeProvider, showCollapseAll: true });
 
    // 문서가 저장될 때마다 실행된다.
-  vscode.workspace.onDidSaveTextDocument((e) => {
+  vscode.workspace.onDidSaveTextDocument(async (e) => {
     const l = e.languageId;
     if((l === "c") || (l === "cpp") || (l==="java") || (l === "javascript")) {
-      const comments = model.collectComments();
+      const username = await context.globalState.get('username');
+      const comments = model.collectComments(username);
       treeProvider.update(comments);
       vscode.window.createTreeView("require",{treeDataProvider: treeProvider, showCollapseAll: true });
     }
@@ -274,8 +279,9 @@ function activate(context) {
   //command 들의 disposable입니다. 배열 뒤에 commands를 추가하면 됩니다.
   let disposables = new Array(
     // 주석 전부 가져오기
-    vscode.commands.registerCommand("minority-code.helloWorld", function() {
-      const comments =  model.collectComments();
+    vscode.commands.registerCommand("minority-code.helloWorld",async function() {
+      const username = await context.globalState.get("username");
+      const comments =  model.collectComments(username);
       let treeProvider = new TreeDataProvider();
       treeProvider.update(comments);
       vscode.window.createTreeView("require",{treeDataProvider: treeProvider, showCollapseAll: true });

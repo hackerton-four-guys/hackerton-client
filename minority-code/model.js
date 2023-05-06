@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
+const { activate } = require('./extension');
 
 class Comments {
    constructor(name) {
@@ -20,10 +21,10 @@ class Data {
    }
 }
 
-function collectComments() {
+function collectComments(username) {
    const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
    const programFiles = getProgramFiles(folderPath);
-   const comments = getComments(programFiles);
+   const comments = getComments(programFiles, username);
    console.log(comments);
    return comments;
   }
@@ -44,9 +45,9 @@ function getProgramFiles(folderPath) {
    return programFiles;
   }
   
-function getComments(programFiles) {
+function getComments(programFiles, username) {
    let comments = '';
-   const everyComments = new Comments("serenata2");
+   const everyComments = new Comments(username);
    for (let i = 0; i < programFiles.length; i++) {
      const content = fs.readFileSync(programFiles[i], 'utf-8');
      const lines = content.split('\n');
@@ -85,12 +86,12 @@ function getComments(programFiles) {
             
             // 처음인 경우
             if(state == ""){
-               if(tokens[0] == "REQUIRE" || tokens[0] == "REVIEW"){
+               if(tokens[0] == "REQUIRE:" || tokens[0] == "REVIEW:"){
                   state = tokens[0];
                }
             }
             // 새로운 state를 만난다면
-            else if((tokens[0] == "REQUIRE" || tokens[0] == "REVIEW" || tokens[0] == "BY") && (tokens[0] != state)){
+            else if((tokens[0] == "REQUIRE:" || tokens[0] == "REVIEW:" || tokens[0] == "BY") && (tokens[0] != state)){
                if(tokens[0] == "BY"){
                   dataList.push({state : state, data : new Data(reciver, message, programFiles[i], lineNum)});
                   let sender = tokens[1].substring(1).trim();
@@ -99,8 +100,9 @@ function getComments(programFiles) {
                   }
                   for(let k = 0; k < dataList.length; k++){
                      dataList[k].data.BY = sender;
-                     if(sender == "serenata2" || reciver == "serenata2"){
-                        if(dataList[k].state == "REQUIRE"){
+
+                     if(reciver === username || username === undefined){
+                        if(dataList[k].state == "REQUIRE:"){
                            everyComments.REQUIRE.list.push(dataList[k].data);
                         }
                         else{
@@ -114,7 +116,7 @@ function getComments(programFiles) {
                state = tokens[0];
                message = "";
             }
-            else if(state == "REQUIRE" || state == "REVIEW"){
+            else if(state == "REQUIRE:" || state == "REVIEW:"){
                line = line.substring(1).trim();
                message += (line + " ");
             }
