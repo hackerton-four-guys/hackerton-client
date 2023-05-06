@@ -36,7 +36,7 @@
       "require": [
 				{
 					"id": "require",
-					"name": "Require"
+					"name": "comments"
 				}
 			]
     },

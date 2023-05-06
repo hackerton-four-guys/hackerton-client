@@ -28,20 +28,29 @@ class TreeDataProvider {
 
   data;
 
+  folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+
   update(comments) {
-    console.log("comments", comments);
 
     const requireItemList = [];
     const requireList = comments.REQUIRE.list;
-    console.log("requireList", requireList);
+
     for(let i = 0 ; i < requireList.length ; i ++ ) {
-      requireItemList.push(new TreeItem(requireList[i].message, Object.assign(new model.Data(), requireList[i])));
+      let shortStr = requireList[i].message;
+      if(shortStr.length > 15) {
+        shortStr = shortStr.substring(0, 15);
+      }
+      requireItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "...    " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), requireList[i])));
     }
 
     const reviewItemList = [];
     const reviewList = comments.REVIEW.list;
     for(let i = 0 ; i < reviewList.length ; i ++ ) {
-      reviewItemList.push(new TreeItem(reviewList[i].message, Object.assign(new model.Data(), reviewList[i])));
+      let shortStr = requireList[i].message;
+      if(shortStr.length > 10) {
+        shortStr = shortStr.substring(0, 9);
+      }
+      reviewItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "...    " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), reviewList[i])));
     }
 
     this.data = null;
@@ -49,8 +58,6 @@ class TreeDataProvider {
 
     this.data.push(new TreeItem("Require", requireItemList));
     this.data.push(new TreeItem("Review", reviewItemList));
-
-    console.log(this.data);
   }
 
   constructor() {
@@ -89,6 +96,15 @@ class TreeItem extends vscode.TreeItem {
         ? vscode.TreeItemCollapsibleState.None
         : vscode.TreeItemCollapsibleState.Expanded
     );
+
+    if(this.label === "Require"){
+      this.iconPath.light = path.join(__filename, '..', 'resources', 'require.svg');
+      this.iconPath.dark = path.join(__filename, '..', 'resources', 'require.svg');
+    }else if(this.label === "Review") {
+      this.iconPath.light = path.join(__filename, '..', 'resources', 'review.svg');
+      this.iconPath.dark = path.join(__filename, '..', 'resources', 'review.svg');
+    }
+
     this.children = children;
     console.log("children", children);
     this.command.arguments[0] = children.path;
@@ -244,17 +260,9 @@ function activate(context) {
     }
   })
 
-  //트리가 확장됐을 때 호출되는 콜백
-  tree.onDidExpandElement(e => {
-  })
-
-  tree.onDidCollapseElement(e => {
-  })
-  
   vscode.languages.registerDocumentLinkProvider({ scheme: ContentProvider.scheme }, provider)
 
   const providerRegistrations = vscode.Disposable.from(
-		// vscode.workspace.registerTextDocumentContentProvider(ContentProvider.scheme, provider),
 		vscode.languages.registerDocumentLinkProvider({ scheme: ContentProvider.scheme }, provider)
 	);
 
