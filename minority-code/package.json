@@ -52,6 +52,10 @@
       {
         "command": "minority-code.printReferences",
         "title": "Print Reference"
+      }, 
+      {
+        "command": "minority-code.configUsername",
+        "title": "Config Git Hub ID of Minority-Code"
       }
     ]
   },

@@ -293,10 +293,19 @@ function activate(context) {
     })
   );
 
+  // User Name 바꾸는 명령
+  const configUsernameDisposal = vscode.commands.registerCommand('minority-code.configUsername', async () => {
+    const oldUsername = await context.globalState.get('username');
+    const newUsername = await vscode.window.showInputBox({placeHolder: `Your current Git Hub ID: ${oldUsername}, type to change ID.`})
+    await context.globalState.update('username', newUsername);
+    vscode.window.showInformationMessage(`Your new Git Hub ID: ${newUsername}`)
+    vscode.commands.executeCommand('minority-code.helloWorld');
+  })
+
   for (const disposable of disposables) {
     context.subscriptions.push(disposable);
   }
-  context.subscriptions.push(providerRegistrations, commandRegistration, MakeCommentDisposable, AutoCompleteProvider);
+  context.subscriptions.push(providerRegistrations, commandRegistration, MakeCommentDisposable, AutoCompleteProvider, configUsernameDisposal);
 }
 
 // This method is called when your extension is deactivated
