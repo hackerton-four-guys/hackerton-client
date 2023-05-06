@@ -67,6 +67,10 @@ class TreeDataProvider {
 }
 
 class TreeItem extends vscode.TreeItem {
+  iconPath = {
+    light: path.join(__filename, '..', 'resources', 'light', 'icon.svg'),
+    dark: path.join(__filename, '..', 'resources', 'dark', 'icon.svg')
+  }
   children;
 
   command = {
@@ -86,6 +90,35 @@ class TreeItem extends vscode.TreeItem {
     console.log("children", children);
     this.command.arguments[0] = children.path;
     this.command.arguments[1] = children.line;
+
+    if(children.path == null) {
+      return;
+    }
+
+    const split = children.path.split(".");
+    if(split.length > 0 )  {
+      const ext = split[split.length - 1];
+      if( ext === "cpp") {
+        this.iconPath.light = path.join(__filename, '..', 'resources', 'light', 'cpp.svg');
+        this.iconPath.dark = path.join(__filename, '..', 'resources', 'dark', 'cpp.svg');
+      } else if( ext === "c") {
+        this.iconPath.light = path.join(__filename, '..', 'resources', 'light', 'c.svg');
+        this.iconPath.dark = path.join(__filename, '..', 'resources', 'dark', 'c.svg');
+      } else if(ext === "java") {
+        this.iconPath.light = path.join(__filename, '..', 'resources', 'light', 'java.svg');
+        this.iconPath.dark = path.join(__filename, '..', 'resources', 'dark', 'java.svg');
+      } else if(ext === "js") {
+        this.iconPath.light = path.join(__filename, '..', 'resources', 'light', 'js.svg');
+        this.iconPath.dark = path.join(__filename, '..', 'resources', 'dark', 'js.svg');
+      } else {
+        this.iconPath.light = path.join(__filename, '..', 'resources', 'light', 'default.svg');
+        this.iconPath.dark = path.join(__filename, '..', 'resources', 'dark', 'default.svg');
+      }
+    } else {
+      //기본 아이콘
+        this.iconPath.light = path.join(__filename, '..', 'resources', 'light', 'default.svg');
+        this.iconPath.dark = path.join(__filename, '..', 'resources', 'dark', 'default.svg');
+    }
   }
 }
 
@@ -139,7 +172,8 @@ function activate(context) {
 
     
     // // uri path로 구하기
-    const new_uri = vscode.Uri.parse(args[0]);
+    // const new_uri = vscode.Uri.parse(args[0]);
+    const new_uri = vscode.Uri.file(path.normalize(args[0])).with({ scheme: 'file' });
   
     return moveCursorToUri(new_uri, newSelection);
 	});
@@ -179,16 +213,6 @@ module.exports = {
 };
 
 let seq = 0;
-
-function encodeLocation(uri, pos) {
-	const query = JSON.stringify([uri.toString(), pos.line, pos.character]);
-	return vscode.Uri.parse(`${ContentProvider.scheme}:References.locations?${query}#${seq++}`);
-}
-
-function decodeLocation(uri) {
-	const [target, line, character] = JSON.parse(uri.query);
-	return [vscode.Uri.parse(target), new vscode.Position(line, character)];
-}
 
 async function moveCursorToUri(uri, selection) {
   // 현재 열려있는 모든 편집기 창에서 특정 URI를 가진 창을 찾음
