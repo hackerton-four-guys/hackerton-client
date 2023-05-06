@@ -96,7 +96,7 @@ function getComments(programFiles, username) {
                   dataList.push({state : state, data : new Data(reciver, message, programFiles[i], lineNum)});
                   let sender = tokens[1].substring(1).trim();
                   if(sender.endsWith("/")){
-                     sender.substring(0, sender.length-2);
+                     sender = sender.substring(0, sender.length-2);
                   }
                   for(let k = 0; k < dataList.length; k++){
                      dataList[k].data.BY = sender;

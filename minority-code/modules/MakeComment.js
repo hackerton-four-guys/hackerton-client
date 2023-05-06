@@ -14,9 +14,9 @@ module.exports = function (parentContext) {
       const tailComment = ` * BY @${username} */`;
       const comment =
         "/* TO \n" +
-        " * REVIEW: \n" +
-        " * \n" +
         " * REQUIRE: \n" +
+        " * \n" +
+        " * REVIEW: \n" +
         " * \n" +
         tailComment;
 
