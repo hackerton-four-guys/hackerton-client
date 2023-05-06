@@ -14,12 +14,6 @@
   ],
   "main": "./extension.js",
   "contributes": {
-    "__commands": [
-      {
-        "command": "minority-code.helloWorld",
-        "title": "Hello World"
-      }
-    ],
     "keybindings": [
       {
         "command": "minority-code.makeComment",
