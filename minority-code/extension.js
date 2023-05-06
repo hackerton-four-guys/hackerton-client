@@ -39,18 +39,22 @@ class TreeDataProvider {
       let shortStr = requireList[i].message;
       if(shortStr.length > 15) {
         shortStr = shortStr.substring(0, 15);
+        requireItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "...    " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), requireList[i])));
+      } else {
+        requireItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "      " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), requireList[i])));
       }
-      requireItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "...    " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), requireList[i])));
     }
 
     const reviewItemList = [];
     const reviewList = comments.REVIEW.list;
     for(let i = 0 ; i < reviewList.length ; i ++ ) {
       let shortStr = requireList[i].message;
-      if(shortStr.length > 10) {
-        shortStr = shortStr.substring(0, 9);
+      if(shortStr.length > 15) {
+        shortStr = shortStr.substring(0, 15);
+        reviewItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "...    " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), reviewList[i])));
+      } else {
+        reviewItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "      " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), reviewList[i])));
       }
-      reviewItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "...    " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), reviewList[i])));
     }
 
     this.data = null;
