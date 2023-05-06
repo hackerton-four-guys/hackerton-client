@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
+const { ConsoleReporter } = require('@vscode/test-electron');
 
 class Comments {
    constructor(name) {
@@ -24,7 +25,6 @@ function collectComments(username) {
    const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
    const programFiles = getProgramFiles(folderPath);
    const comments = getComments(programFiles, username);
-   console.log(comments);
    return comments;
   }
   
@@ -61,28 +61,22 @@ function getComments(programFiles, username) {
       // 만약 "/*"로 시작한다면
       if (line.startsWith('/*')) {
         let lineNum = j;
-        // 그 라인에서 "/*"을 지우고 " " 기준으로 split!
-        const startTokens = line.substring(2).trim().split(' ');
+        // 그 라인에서 "/*"을 지우고 양쪽 공백 제거!
+        const startLine = line.substring(2).trim();
+
         // 첫 번째 라인이 "TO @" 패턴이라면
-        if(startTokens[0] == "TO" && startTokens[1].startsWith("@")){
-         
+        if(startLine.startsWith("TO") && startLine.substring(2).trim().startsWith("@")){
          // reciver 받아오기
-         const reciver = startTokens[1].substring(1).trim();
+         const reciver = startLine.substring(2).trim().substring(1);
          // 첫 라인 이후부터 계속 메세지 읽기
          j += 1;
          let message = "";
          let state = "";
          const dataList = [];
          while(j < lineLength && lines[j].trim().startsWith("*")){
-            let line = lines[j].trim();
-            const tokens = line.split(" ");
-            if(tokens[0].length == 1){ // * 안녕하세요 -> 안녕하세요
-               tokens.shift();
-            }
-            else{ // *안녕하세요 -> 안녕하세요
-               tokens[0] = tokens[0].substring(1);
-            }
-            
+            let line = lines[j].trim().substring(1);
+            const tokens = line.trim().split(" ");
+
             // 처음인 경우
             if(state == ""){
                if(tokens[0] == "REQUIRE:" || tokens[0] == "REVIEW:"){
@@ -93,14 +87,13 @@ function getComments(programFiles, username) {
             else if((tokens[0] == "REQUIRE:" || tokens[0] == "REVIEW:" || tokens[0] == "BY") && (tokens[0] != state)){
                if(tokens[0] == "BY"){
                   dataList.push({state : state, data : new Data(reciver, message, programFiles[i], lineNum)});
-                  let sender = tokens[1].substring(1).trim();
+                  let sender = line.trimStart().substring(2).trimStart().substring(1);
                   if(sender.endsWith("/")){
-                     sender = sender.substring(0, sender.length-2);
+                     sender = sender.substring(0, sender.length-2).trim();
                   }
                   for(let k = 0; k < dataList.length; k++){
                      dataList[k].data.BY = sender;
-
-                     if(reciver === username || username === undefined){
+                     if(reciver == username || username === undefined){
                         if(dataList[k].state == "REQUIRE:"){
                            everyComments.REQUIRE.list.push(dataList[k].data);
                         }
