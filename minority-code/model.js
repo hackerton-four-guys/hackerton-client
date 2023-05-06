@@ -1,7 +1,6 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
-const { activate } = require('./extension');
 
 class Comments {
    constructor(name) {
