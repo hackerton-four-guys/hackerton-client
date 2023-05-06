@@ -28,20 +28,29 @@ class TreeDataProvider {
 
   data;
 
+  folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+
   update(comments) {
 
     const requireItemList = [];
     const requireList = comments.REQUIRE.list;
-    console.log("requireList", requireList);
 
     for(let i = 0 ; i < requireList.length ; i ++ ) {
-      requireItemList.push(new TreeItem(requireList[i].BY + " - " + requireList[i].message + "   경로 : " + requireList[i].path, Object.assign(new model.Data(), requireList[i])));
+      let shortStr = requireList[i].message;
+      if(shortStr.length > 15) {
+        shortStr = shortStr.substring(0, 15);
+      }
+      requireItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "...    " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), requireList[i])));
     }
 
     const reviewItemList = [];
     const reviewList = comments.REVIEW.list;
     for(let i = 0 ; i < reviewList.length ; i ++ ) {
-      reviewItemList.push(new TreeItem(requireList[i].BY + " - " + requireList[i].message + "   경로 : " + requireList[i].path, Object.assign(new model.Data(), reviewList[i])));
+      let shortStr = requireList[i].message;
+      if(shortStr.length > 10) {
+        shortStr = shortStr.substring(0, 9);
+      }
+      reviewItemList.push(new TreeItem(requireList[i].BY + " - " + shortStr + "...    " + requireList[i].path.split(this.folderPath)[1], Object.assign(new model.Data(), reviewList[i])));
     }
 
     this.data = null;
