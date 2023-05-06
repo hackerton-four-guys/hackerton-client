@@ -12,9 +12,9 @@ const initExtension = async (context) => {
   let branches = await context.globalState.get("branches");
   let isExist = false;
 
-  await context.globalState.update("username", undefined);
-  await context.globalState.update("branches", undefined);
-  await context.workspaceState.update("organization", undefined);
+  // await context.globalState.update("username", undefined);
+  // await context.globalState.update("branches", undefined);
+  // await context.workspaceState.update("organization", undefined);
 
   const currentPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
 
@@ -23,7 +23,7 @@ const initExtension = async (context) => {
     await vscode.window
       .showInputBox({ placeHolder: "Type Your Github ID" })
       .then(async (input) => {
-        vscode.window.showInformationMessage("your github id is" + input);
+        vscode.window.showInformationMessage("your github id is " + input);
         username = input;
         await context.globalState.update("username", username);
       });
@@ -33,7 +33,7 @@ const initExtension = async (context) => {
     await vscode.window
       .showInputBox({ placeHolder: "Type Your Organization Name" })
       .then(async (input) => {
-        vscode.window.showInformationMessage("your organization is" + input);
+        vscode.window.showInformationMessage("your organization is " + input);
         if (input) {
           console.log("input is true");
           const newBranch = [];
@@ -70,7 +70,7 @@ const initExtension = async (context) => {
     await vscode.window
       .showInputBox({ placeHolder: "Type Your Organization Name" })
       .then(async (input) => {
-        vscode.window.showInformationMessage("your organization is" + input);
+        vscode.window.showInformationMessage("your organization is " + input);
         if (input) {
           const branch = {
             organization: input,

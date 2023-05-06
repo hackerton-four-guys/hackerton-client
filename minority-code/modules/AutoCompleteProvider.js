@@ -9,7 +9,7 @@ const KEY = process.env.GITHUB_API_KEY;
 
 module.exports = function (parentContext) {
   const AutoCompleteProvider = vscode.languages.registerCompletionItemProvider(
-    ["c", "cpp", "java", "javascript"],
+    ["c", "cpp", "java", "javascript", "kotlin"],
     {
       async provideCompletionItems(document, position, token, context) {
         const linePrefix = document
