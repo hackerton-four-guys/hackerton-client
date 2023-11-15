@@ -9,13 +9,50 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{
-      "command": "minority-code.helloWorld",
-      "title": "Hello World"
-    }]
+
+    "keybindings": [
+      {
+        "command": "minority-code.makeComment",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m",
+        "when": "editorTextFocus"
+
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "require",
+          "title": "Perfect Coop",
+          "icon": "resources/handshake.svg"
+        }
+      ]
+    },
+    "views": {
+      "require": [
+				{
+					"id": "require",
+					"name": "Require"
+				}
+			]
+    },
+    "commands": [
+      {
+        "command": "minority-code.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "minority-code.refresh",
+        "title": "Refresh"
+      },
+      {
+        "command": "minority-code.printReferences",
+        "title": "Print Reference"
+      }
+    ]
   },
   "scripts": {
     "lint": "eslint .",
@@ -23,14 +60,19 @@
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.78.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
+    "@types/vscode": "^1.78.0",
+    "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.39.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.0.4",
-    "@vscode/test-electron": "^2.3.0"
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "node-fetch": "^3.3.1"
   }
 }
